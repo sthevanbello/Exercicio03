@@ -10,12 +10,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Exercicio02
@@ -34,13 +36,35 @@ namespace Exercicio02
         {
 
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Exercicio02", Version = "v1" });
+
                 var xmlArquivo = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlArquivo));
             });
 
+
+            // Config JWT
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            }).AddJwtBearer("JwtBearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cripto-chave-autenticacao")),
+                    ClockSkew = TimeSpan.FromMinutes(30),
+                    ValidIssuer = "cripto.webAPI",
+                    ValidAudience = "cripto.webAPI"
+                };
+            });
 
             //services.AddDbContext<Mais_EventosContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("Mais_Eventos")));
@@ -55,6 +79,7 @@ namespace Exercicio02
             services.AddTransient<ITbUsuarioRepository, TbUsuarioRepository>();
             services.AddTransient<ITbEventoRepository, TbEventoRepository>();
             services.AddTransient<ITbCategoriaRepository, TbCategoriaRepository>();
+            services.AddTransient<ILoginRepository, LoginRepository>();
 
         }
 

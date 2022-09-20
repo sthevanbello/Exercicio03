@@ -28,5 +28,17 @@ namespace Exercicio02.Repositories
             
             return usuarios;
         }
+
+        public ICollection<TbUsuario> ListarPorIdUsuarioComEventos(int id)
+        {
+            var usuarios = _context.TbUsuarios
+                .Include(u => u.RlUsuarioEventos)
+                .ThenInclude(e => e.Evento)
+                .ThenInclude(c => c.Categoria)
+                .Where(u => u.Id == id)
+                .ToList();
+
+            return usuarios;
+        }
     }
 }

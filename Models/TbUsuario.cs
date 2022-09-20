@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -17,7 +18,7 @@ namespace Exercicio02.Models
         public string Email { get; set; }
         public string Senha { get; set; }
         public string Imagem { get; set; }
-
+        [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
         public virtual ICollection<RlUsuarioEvento> RlUsuarioEventos { get; set; }
     }
 }

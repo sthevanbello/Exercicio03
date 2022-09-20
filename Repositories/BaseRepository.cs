@@ -3,6 +3,7 @@ using Exercicio02.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Exercicio02.Repositories
 {
@@ -30,7 +31,7 @@ namespace Exercicio02.Repositories
         {
             var query = _dbSet.AsQueryable();
 
-            return query.ToListAsync().Result;
+            return query.ToList();
 
         }
         public T BuscarPorId(int id)
@@ -39,14 +40,16 @@ namespace Exercicio02.Repositories
         }
         public void Alterar(T item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            //_context.Entry(item).State = EntityState.Modified;
+            _dbSet.Update(item);
             _context.SaveChanges();
         }
 
         public void AlterarParcialmente(JsonPatchDocument patchItem, T item)
         {
             patchItem.ApplyTo(item);
-            _context.Entry(item).State = EntityState.Modified;
+            //_context.Entry(item).State = EntityState.Modified;
+            _context.Update(item);
             _context.SaveChanges();
         }
         public void Excluir(T item)

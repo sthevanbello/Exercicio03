@@ -10,7 +10,6 @@ namespace Exercicio02.Models
         public int Id { get; set; }
         public int? UsuarioId { get; set; }
         public int? EventoId { get; set; }
-
         public virtual TbEvento Evento { get; set; }
         public virtual TbUsuario Usuario { get; set; }
     }

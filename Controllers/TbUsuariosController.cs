@@ -27,6 +27,7 @@ namespace Exercicio02.Controllers
         {
             try
             {
+                usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
                 var usuarioInserido = _usuarioRepository.Inserir(usuario);
                 return Ok(usuarioInserido);
             }
@@ -113,6 +114,34 @@ namespace Exercicio02.Controllers
         }
 
         /// <summary>
+        /// Exibir um usuário a partir do Id fornecido
+        /// </summary>
+        /// <param name="id">Id da usuário</param>
+        /// <returns></returns>
+        [HttpGet("Eventos/{id}")]
+        public IActionResult GetByIdUsuarioComEventos(int id)
+        {
+            try
+            {
+                var usuario = _usuarioRepository.ListarPorIdUsuarioComEventos(id);
+                if (usuario is null)
+                {
+                    return NotFound(new { msg = "Usuário não foi encontrado. Verifique se o Id está correto" });
+                }
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new
+                {
+                    msg = "Falha ao exibir o usuário",
+                    ex.Message
+                });
+            }
+        }
+
+        /// <summary>
         /// Atualizar parte das informações do usuário
         /// </summary>
         /// <param name="id">Id do usuário</param>
@@ -129,6 +158,8 @@ namespace Exercicio02.Controllers
                 }
 
                 var usuario = _usuarioRepository.BuscarPorId(id);
+
+                patchUsuario.Operations[0].value = BCrypt.Net.BCrypt.HashPassword(patchUsuario.Operations[0].value.ToString());
                 if (usuario is null)
                 {
                     return NotFound(new { msg = "Usuário não encontrado. Conferir o Id informado" });
@@ -163,13 +194,13 @@ namespace Exercicio02.Controllers
                 {
                     return BadRequest(new { msg = "Os ids não são correspondentes" });
                 }
-                var usuarioRetorno = _usuarioRepository.BuscarPorId(id);
+                var usuarioRetorno = _usuarioRepository.ListarPorIdUsuarioComEventos(id);
 
                 if (usuarioRetorno is null)
                 {
                     return NotFound(new { msg = "Usuário não encontrado. Conferir o Id informado" });
                 }
-
+                usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
                 _usuarioRepository.Alterar(usuario);
 
                 return Ok(new { msg = "Usuário alterado", usuario });
