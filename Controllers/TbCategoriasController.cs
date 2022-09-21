@@ -1,5 +1,6 @@
 ﻿using Exercicio02.Interfaces;
 using Exercicio02.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,6 +9,7 @@ namespace Exercicio02.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TbCategoriasController : ControllerBase
     {
         private readonly ITbCategoriaRepository _categoriaRepository;

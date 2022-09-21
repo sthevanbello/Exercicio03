@@ -1,6 +1,8 @@
 ﻿using Exercicio02.Interfaces;
 using Exercicio02.Models;
 using Exercicio02.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +11,7 @@ namespace Exercicio02.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TbUsuariosController : ControllerBase
     {
         private readonly ITbUsuarioRepository _usuarioRepository;
@@ -67,6 +70,7 @@ namespace Exercicio02.Controllers
         /// Exibir lista de Usuários com seus relacionamentos com Eventos
         /// </summary>
         /// <returns>Lista de usuários</returns>
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public IActionResult GetAllUsuarios()
         {
@@ -159,7 +163,7 @@ namespace Exercicio02.Controllers
 
                 var usuario = _usuarioRepository.BuscarPorId(id);
 
-                patchUsuario.Operations[0].value = BCrypt.Net.BCrypt.HashPassword(patchUsuario.Operations[0].value.ToString());
+                //patchUsuario.Operations[0].value = BCrypt.Net.BCrypt.HashPassword(patchUsuario.Operations[0].value.ToString());
                 if (usuario is null)
                 {
                     return NotFound(new { msg = "Usuário não encontrado. Conferir o Id informado" });
@@ -221,7 +225,9 @@ namespace Exercicio02.Controllers
         /// </summary>
         /// <param name="id">Id da usuário a ser excluído</param>
         /// <returns></returns>
+        //[ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
+        //[Authorize]
         public IActionResult DeleteUsuario(int id)
         {
             try
