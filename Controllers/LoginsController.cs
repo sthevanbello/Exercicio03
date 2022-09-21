@@ -27,7 +27,7 @@ namespace Exercicio02.Controllers
             var logar = _repositoryLogin.Logar(email, senha);
             if (logar == null)
                 return Unauthorized();
-            return Ok(logar);
+            return Ok(new {token = logar});
         }
     }
 }
