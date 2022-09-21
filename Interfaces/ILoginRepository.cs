@@ -4,6 +4,6 @@ namespace Exercicio02.Interfaces
 {
     public interface ILoginRepository
     {
-        TbUsuario Logar(string email, string senha);
+        string Logar(string email, string senha);
     }
 }
