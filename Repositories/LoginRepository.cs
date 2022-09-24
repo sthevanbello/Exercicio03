@@ -12,16 +12,16 @@ namespace Exercicio02.Repositories
 {
     public class LoginRepository : ILoginRepository
     {
-        private readonly Mais_EventosContext _ctx;
+        private readonly Mais_EventosContext _context;
 
         public LoginRepository(Mais_EventosContext ctx)
         {
-            _ctx = ctx;
+            _context = ctx;
         }
 
         public string Logar(string email, string senha)
         {
-            var usuario = _ctx.TbUsuarios.Where(u => u.Email == email).FirstOrDefault();
+            var usuario = _context.TbUsuarios.Where(u => u.Email == email).FirstOrDefault();
             if (usuario != null)
             {
                 bool validPassword = BCrypt.Net.BCrypt.Verify(senha, usuario.Senha);
